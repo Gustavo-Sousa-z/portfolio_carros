@@ -1,0 +1,11 @@
+{
+  "nome": "Hyundai HB20",
+  "ano": 2021,
+  "preco": 74900,
+  "km": 38000,
+  "cor": "Cinza",
+  "cambio": "Automático",
+  "combustivel": "Flex",
+  "descricao": "HB20 Diamond automático, rodas de liga leve 16\", central multimídia touchscreen. Conservado e revisado.",
+  "fotos": ["foto1.jpg", "foto2.jpg"]
+}

@@ -1,0 +1,11 @@
+{
+  "nome": "Jeep Compass",
+  "ano": 2022,
+  "preco": 189900,
+  "km": 22000,
+  "cor": "Branco",
+  "cambio": "Automático",
+  "combustivel": "Flex",
+  "descricao": "Compass Limited com tração 4x2, bancos em couro, painel digital, câmera 360° e faróis full LED. Perfeito.",
+  "fotos": ["foto1.jpg", "foto2.jpg"]
+}

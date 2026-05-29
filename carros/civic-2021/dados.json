@@ -1,0 +1,11 @@
+{
+  "nome": "Honda Civic",
+  "ano": 2021,
+  "preco": 139900,
+  "km": 42000,
+  "cor": "Preto",
+  "cambio": "CVT",
+  "combustivel": "Flex",
+  "descricao": "Civic EXL com teto solar, bancos em couro, câmera de ré e central multimídia. Impecável.",
+  "fotos": ["foto1.jpg", "foto2.jpg"]
+}

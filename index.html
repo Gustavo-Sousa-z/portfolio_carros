@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfólio de Veículos</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #f0f2f5;
+      color: #1a1a1a;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+      color: white;
+      padding: 2.5rem 1rem;
+      text-align: center;
+    }
+    header h1 { font-size: 2rem; letter-spacing: 1px; }
+    header p { margin-top: .5rem; opacity: .75; font-size: .95rem; }
+
+    .filtros {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem;
+      justify-content: center;
+      padding: 1.5rem 1rem;
+      background: white;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .filtros input, .filtros select {
+      padding: .5rem .9rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: .9rem;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .filtros input:focus, .filtros select:focus { border-color: #0f3460; }
+
+    .contador {
+      text-align: center;
+      padding: .75rem;
+      font-size: .85rem;
+      color: #666;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+      padding: 1.5rem;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,.08);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,.14); }
+
+    /* Galeria */
+    .galeria { position: relative; height: 220px; background: #eee; overflow: hidden; }
+    .slides { height: 100%; }
+    .slide { display: none; height: 100%; }
+    .slide.active { display: block; }
+    .slide img { width: 100%; height: 100%; object-fit: cover; }
+    .sem-foto {
+      height: 220px; display: flex; align-items: center; justify-content: center;
+      color: #aaa; font-size: .9rem; background: #f5f5f5;
+    }
+    .nav {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(0,0,0,.45); color: white; border: none;
+      width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
+      font-size: 1.2rem; line-height: 1; display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity .2s;
+    }
+    .galeria:hover .nav { opacity: 1; }
+    .prev { left: 8px; }
+    .next { right: 8px; }
+    .dots { position: absolute; bottom: 8px; width: 100%; display: flex; justify-content: center; gap: 5px; }
+    .dot {
+      width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.6);
+      cursor: pointer; transition: background .2s;
+    }
+    .dot.active { background: white; }
+
+    .card-body { padding: 1.1rem 1.2rem 1.4rem; }
+    .card-titulo { font-size: 1.1rem; font-weight: 700; }
+    .ano { font-weight: 400; color: #666; font-size: .95rem; }
+    .preco { font-size: 1.5rem; font-weight: 800; color: #0f3460; margin: .4rem 0 .8rem; }
+
+    .specs {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: .3rem .6rem; list-style: none; font-size: .82rem;
+      margin-bottom: .9rem;
+    }
+    .specs li { color: #555; }
+    .label { font-weight: 600; color: #333; }
+
+    .descricao { font-size: .83rem; color: #666; line-height: 1.5; margin-bottom: 1rem; }
+
+    .btn-whatsapp {
+      display: block; text-align: center; background: #25d366;
+      color: white; padding: .65rem; border-radius: 8px;
+      text-decoration: none; font-weight: 600; font-size: .9rem;
+      transition: background .2s;
+    }
+    .btn-whatsapp:hover { background: #1da851; }
+
+    .nenhum {
+      text-align: center; padding: 3rem; color: #999; grid-column: 1/-1;
+    }
+
+    footer {
+      text-align: center; padding: 2rem; color: #999; font-size: .8rem;
+      border-top: 1px solid #e0e0e0; margin-top: 1rem;
+    }
+
+    @media (max-width: 480px) {
+      header h1 { font-size: 1.4rem; }
+      .grid { padding: 1rem .75rem; gap: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🚗 Portfólio de Veículos</h1>
+  <p>8 veículos disponíveis</p>
+</header>
+
+<section class="filtros">
+  <input type="text" id="busca" placeholder="Buscar por nome, cor..." oninput="filtrar()">
+  <select id="cambio" onchange="filtrar()">
+    <option value="">Câmbio (todos)</option>
+    <option>Manual</option>
+    <option>Automático</option>
+    <option>CVT</option>
+  </select>
+  <select id="combustivel" onchange="filtrar()">
+    <option value="">Combustível (todos)</option>
+    <option>Flex</option>
+    <option>Diesel</option>
+    <option>Elétrico</option>
+    <option>Gasolina</option>
+  </select>
+  <select id="ordem" onchange="filtrar()">
+    <option value="nome">Ordenar: Nome</option>
+    <option value="preco_asc">Menor preço</option>
+    <option value="preco_desc">Maior preço</option>
+    <option value="km_asc">Menor KM</option>
+    <option value="ano_desc">Mais novo</option>
+  </select>
+</section>
+
+<p class="contador" id="contador"></p>
+
+<main class="grid" id="grid">
+
+    <article class="card">
+      
+    <div class="galeria">
+      <div class="slides"><div class="slide active"><img src="carros/civic-2021/foto1.jpg" alt="Foto 1" loading="lazy"></div>
+<div class="slide "><img src="carros/civic-2021/foto2.jpg" alt="Foto 2" loading="lazy"></div>
+</div>
+      <button class="nav prev" onclick="navFoto(this, -1)">&#8249;</button>
+      <button class="nav next" onclick="navFoto(this, 1)">&#8250;</button>
+      <div class="dots"><span class="dot active" onclick="mudarFoto(this, 0)"></span>
+<span class="dot " onclick="mudarFoto(this, 1)"></span>
+</div>
+    </div>
+      <div class="card-body">
+        <h2 class="card-titulo">Honda Civic <span class="ano">2021</span></h2>
+        <p class="preco">R$ 139.900</p>
+        <ul class="specs">
+          <li><span class="label">KM</span> 42.000</li>
+          <li><span class="label">Cor</span> Preto</li>
+          <li><span class="label">Câmbio</span> CVT</li>
+          <li><span class="label">Combustível</span> Flex</li>
+        </ul>
+        <p class="descricao">Civic EXL com teto solar, bancos em couro, câmera de ré e central multimídia. Impecável.</p>
+        <a href="https://wa.me/?text=Olá, tenho interesse no Honda Civic 2021!" class="btn-whatsapp" target="_blank">
+          Tenho interesse
+        </a>
+      </div>
+    </article>
+
+    <article class="card">
+      
+    <div class="galeria">
+      <div class="slides"><div class="slide active"><img src="carros/compass-2022/foto1.jpg" alt="Foto 1" loading="lazy"></div>
+<div class="slide "><img src="carros/compass-2022/foto2.jpg" alt="Foto 2" loading="lazy"></div>
+</div>
+      <button class="nav prev" onclick="navFoto(this, -1)">&#8249;</button>
+      <button class="nav next" onclick="navFoto(this, 1)">&#8250;</button>
+      <div class="dots"><span class="dot active" onclick="mudarFoto(this, 0)"></span>
+<span class="dot " onclick="mudarFoto(this, 1)"></span>
+</div>
+    </div>
+      <div class="card-body">
+        <h2 class="card-titulo">Jeep Compass <span class="ano">2022</span></h2>
+        <p class="preco">R$ 189.900</p>
+        <ul class="specs">
+          <li><span class="label">KM</span> 22.000</li>
+          <li><span class="label">Cor</span> Branco</li>
+          <li><span class="label">Câmbio</span> Automático</li>
+          <li><span class="label">Combustível</span> Flex</li>
+        </ul>
+        <p class="descricao">Compass Limited com tração 4x2, bancos em couro, painel digital, câmera 360° e faróis full LED. Perfeito.</p>
+        <a href="https://wa.me/?text=Olá, tenho interesse no Jeep Compass 2022!" class="btn-whatsapp" target="_blank">
+          Tenho interesse
+        </a>
+      </div>
+    </article>
+
+    <article class="card">
+      
+    <div class="galeria">
+      <div class="slides"><div class="slide active"><img src="carros/gol-2022/foto1.jpg" alt="Foto 1" loading="lazy"></div>
+<div class="slide "><img src="carros/gol-2022/foto2.jpg" alt="Foto 2" loading="lazy"></div>
+</div>
+      <button class="nav prev" onclick="navFoto(this, -1)">&#8249;</button>
+      <button class="nav next" onclick="navFoto(this, 1)">&#8250;</button>
+      <div class="dots"><span class="dot active" onclick="mudarFoto(this, 0)"></span>
+<span class="dot " onclick="mudarFoto(this, 1)"></span>
+</div>
+    </div>
+      <div class="card-body">
+        <h2 class="card-titulo">Volkswagen Gol <span class="ano">2022</span></h2>
+        <p class="preco">R$ 65.900</p>
+        <ul class="specs">
+          <li><span class="label">KM</span> 28.000</li>
+          <li><span class="label">Cor</span> Branco</li>
+          <li><span class="label">Câmbio</span> Manual</li>
+          <li><span class="label">Combustível</span> Flex</li>
+        </ul>
+        <p class="descricao">Gol 1.6 MSI em excelente estado. Único dono, revisões em dia na concessionária. IPVA 2024 pago.</p>
+        <a href="https://wa.me/?text=Olá, tenho interesse no Volkswagen Gol 2022!" class="btn-whatsapp" target="_blank">
+          Tenho interesse
+        </a>
+      </div>
+    </article>
+
+    <article class="card">
+      
+    <div class="galeria">
+      <div class="slides"><div class="slide active"><img src="carros/hb20-2021/foto1.jpg" alt="Foto 1" loading="lazy"></div>
+<div class="slide "><img src="carros/hb20-2021/foto2.jpg" alt="Foto 2" loading="lazy"></div>
+</div>
+      <button class="nav prev" onclick="navFoto(this, -1)">&#8249;</button>
+      <button class="nav next" onclick="navFoto(this, 1)">&#8250;</button>
+      <div class="dots"><span class="dot active" onclick="mudarFoto(this, 0)"></span>
+<span class="dot " onclick="mudarFoto(this, 1)"></span>
+</div>
+    </div>
+      <div class="card-body">
+        <h2 class="card-titulo">Hyundai HB20 <span class="ano">2021</span></h2>
+        <p class="preco">R$ 74.900</p>
+        <ul class="specs">
+          <li><span class="label">KM</span> 38.000</li>
+          <li><span class="label">Cor</span> Cinza</li>
+          <li><span class="label">Câmbio</span> Automático</li>
+          <li><span class="label">Combustível</span> Flex</li>
+        </ul>
+        <p class="descricao">HB20 Diamond automático, rodas de liga leve 16", central multimídia touchscreen. Conservado e revisado.</p>
+        <a href="https://wa.me/?text=Olá, tenho interesse no Hyundai HB20 2021!" class="btn-whatsapp" target="_blank">
+          Tenho interesse
+        </a>
+      </div>
+    </article>
+
+    <article class="card">
+      
+    <div class="galeria">
+      <div class="slides"><div class="slide active"><img src="carros/hilux-2023/foto1.jpg" alt="Foto 1" loading="lazy"></div>
+<div class="slide "><img src="carros/hilux-2023/foto2.jpg" alt="Foto 2" loading="lazy"></div>
+</div>
+      <button class="nav prev" onclick="navFoto(this, -1)">&#8249;</button>
+      <button class="nav next" onclick="navFoto(this, 1)">&#8250;</button>
+      <div class="dots"><span class="dot active" onclick="mudarFoto(this, 0)"></span>
+<span class="dot " onclick="mudarFoto(this, 1)"></span>
+</div>
+    </div>
+      <div class="card-body">
+        <h2 class="card-titulo">Toyota Hilux <span class="ano">2023</span></h2>
+        <p class="preco">R$ 289.900</p>
+        <ul class="specs">
+          <li><span class="label">KM</span> 15.000</li>
+          <li><span class="label">Cor</span> Prata</li>
+          <li><span class="label">Câmbio</span> Automático</li>
+          <li><span class="label">Combustível</span> Diesel</li>
+        </ul>
+        <p class="descricao">Hilux SRX 4x4 com todos os opcionais. Carroceria, rodas 18", suspensão reforçada. Garantia de fábrica.</p>
+        <a href="https://wa.me/?text=Olá, tenho interesse no Toyota Hilux 2023!" class="btn-whatsapp" target="_blank">
+          Tenho interesse
+        </a>
+      </div>
+    </article>
+
+    <article class="card">
+      
+    <div class="galeria">
+      <div class="slides"><div class="slide active"><img src="carros/kwid-2023/foto1.jpg" alt="Foto 1" loading="lazy"></div>
+<div class="slide "><img src="carros/kwid-2023/foto2.jpg" alt="Foto 2" loading="lazy"></div>
+</div>
+      <button class="nav prev" onclick="navFoto(this, -1)">&#8249;</button>
+      <button class="nav next" onclick="navFoto(this, 1)">&#8250;</button>
+      <div class="dots"><span class="dot active" onclick="mudarFoto(this, 0)"></span>
+<span class="dot " onclick="mudarFoto(this, 1)"></span>
+</div>
+    </div>
+      <div class="card-body">
+        <h2 class="card-titulo">Renault Kwid <span class="ano">2023</span></h2>
+        <p class="preco">R$ 69.900</p>
+        <ul class="specs">
+          <li><span class="label">KM</span> 5.000</li>
+          <li><span class="label">Cor</span> Laranja</li>
+          <li><span class="label">Câmbio</span> Manual</li>
+          <li><span class="label">Combustível</span> Flex</li>
+        </ul>
+        <p class="descricao">Kwid Outsider 1.0 praticamente zero km. Suspensão elevada, proteções plásticas e estilo aventureiro. Econômico.</p>
+        <a href="https://wa.me/?text=Olá, tenho interesse no Renault Kwid 2023!" class="btn-whatsapp" target="_blank">
+          Tenho interesse
+        </a>
+      </div>
+    </article>
+
+    <article class="card">
+      
+    <div class="galeria">
+      <div class="slides"><div class="slide active"><img src="carros/onix-2023/foto1.jpg" alt="Foto 1" loading="lazy"></div>
+<div class="slide "><img src="carros/onix-2023/foto2.jpg" alt="Foto 2" loading="lazy"></div>
+</div>
+      <button class="nav prev" onclick="navFoto(this, -1)">&#8249;</button>
+      <button class="nav next" onclick="navFoto(this, 1)">&#8250;</button>
+      <div class="dots"><span class="dot active" onclick="mudarFoto(this, 0)"></span>
+<span class="dot " onclick="mudarFoto(this, 1)"></span>
+</div>
+    </div>
+      <div class="card-body">
+        <h2 class="card-titulo">Chevrolet Onix <span class="ano">2023</span></h2>
+        <p class="preco">R$ 89.900</p>
+        <ul class="specs">
+          <li><span class="label">KM</span> 8.000</li>
+          <li><span class="label">Cor</span> Vermelho</li>
+          <li><span class="label">Câmbio</span> Automático</li>
+          <li><span class="label">Combustível</span> Flex</li>
+        </ul>
+        <p class="descricao">Onix Plus Premier automático, central multimídia 8", Apple CarPlay, Android Auto. Seminovo com baixíssima km.</p>
+        <a href="https://wa.me/?text=Olá, tenho interesse no Chevrolet Onix 2023!" class="btn-whatsapp" target="_blank">
+          Tenho interesse
+        </a>
+      </div>
+    </article>
+
+    <article class="card">
+      
+    <div class="galeria">
+      <div class="slides"><div class="slide active"><img src="carros/tracker-2022/foto1.jpg" alt="Foto 1" loading="lazy"></div>
+<div class="slide "><img src="carros/tracker-2022/foto2.jpg" alt="Foto 2" loading="lazy"></div>
+</div>
+      <button class="nav prev" onclick="navFoto(this, -1)">&#8249;</button>
+      <button class="nav next" onclick="navFoto(this, 1)">&#8250;</button>
+      <div class="dots"><span class="dot active" onclick="mudarFoto(this, 0)"></span>
+<span class="dot " onclick="mudarFoto(this, 1)"></span>
+</div>
+    </div>
+      <div class="card-body">
+        <h2 class="card-titulo">Chevrolet Tracker <span class="ano">2022</span></h2>
+        <p class="preco">R$ 119.900</p>
+        <ul class="specs">
+          <li><span class="label">KM</span> 31.000</li>
+          <li><span class="label">Cor</span> Azul</li>
+          <li><span class="label">Câmbio</span> Automático</li>
+          <li><span class="label">Combustível</span> Flex</li>
+        </ul>
+        <p class="descricao">Tracker Premier turbo, teto solar panorâmico, câmera 360°, assistente de frenagem automática. Top de linha.</p>
+        <a href="https://wa.me/?text=Olá, tenho interesse no Chevrolet Tracker 2022!" class="btn-whatsapp" target="_blank">
+          Tenho interesse
+        </a>
+      </div>
+    </article>
+</main>
+
+<footer>Portfólio atualizado automaticamente · Gerado em 29/05/2026</footer>
+
+<script>
+  // Galeria por card
+  function mudarFoto(dot, idx) {
+    const galeria = dot.closest('.galeria');
+    galeria.querySelectorAll('.slide').forEach((s, i) => s.classList.toggle('active', i === idx));
+    galeria.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+  }
+  function navFoto(btn, dir) {
+    const galeria = btn.closest('.galeria');
+    const slides = [...galeria.querySelectorAll('.slide')];
+    const dots   = [...galeria.querySelectorAll('.dot')];
+    const atual  = slides.findIndex(s => s.classList.contains('active'));
+    const prox   = (atual + dir + slides.length) % slides.length;
+    slides.forEach((s, i) => s.classList.toggle('active', i === prox));
+    dots.forEach((d, i)   => d.classList.toggle('active', i === prox));
+  }
+
+  // Filtros
+  const todosCards = [...document.querySelectorAll('.card')];
+  function filtrar() {
+    const busca   = document.getElementById('busca').value.toLowerCase();
+    const cambio  = document.getElementById('cambio').value;
+    const comb    = document.getElementById('combustivel').value;
+    const ordem   = document.getElementById('ordem').value;
+
+    let visiveis = todosCards.filter(card => {
+      const txt   = card.textContent.toLowerCase();
+      const specs = [...card.querySelectorAll('.specs li')].map(l => l.textContent);
+      const okBusca  = !busca  || txt.includes(busca);
+      const okCambio = !cambio || specs.some(s => s.includes(cambio));
+      const okComb   = !comb   || specs.some(s => s.includes(comb));
+      return okBusca && okCambio && okComb;
+    });
+
+    visiveis.sort((a, b) => {
+      const preco = el => parseInt(el.querySelector('.preco').textContent.replace(/\D/g,''));
+      const km    = el => parseInt([...el.querySelectorAll('.specs li')].find(l=>l.textContent.includes('KM'))?.textContent.replace(/\D/g,'') || 0);
+      const ano   = el => parseInt(el.querySelector('.ano')?.textContent || 0);
+      if (ordem === 'preco_asc')  return preco(a) - preco(b);
+      if (ordem === 'preco_desc') return preco(b) - preco(a);
+      if (ordem === 'km_asc')     return km(a) - km(b);
+      if (ordem === 'ano_desc')   return ano(b) - ano(a);
+      return a.querySelector('.card-titulo').textContent.localeCompare(b.querySelector('.card-titulo').textContent);
+    });
+
+    const grid = document.getElementById('grid');
+    todosCards.forEach(c => c.style.display = 'none');
+    visiveis.forEach(c => { c.style.display = ''; grid.appendChild(c); });
+
+    const contador = document.getElementById('contador');
+    if (visiveis.length === 0) {
+      contador.textContent = '';
+      if (!grid.querySelector('.nenhum')) {
+        const msg = document.createElement('p');
+        msg.className = 'nenhum'; msg.textContent = 'Nenhum veículo encontrado com esses filtros.';
+        grid.appendChild(msg);
+      }
+    } else {
+      grid.querySelector('.nenhum')?.remove();
+      contador.textContent = `Exibindo ${visiveis.length} de 8 veículos`;
+    }
+  }
+
+  filtrar();
+</script>
+</body>
+</html>
