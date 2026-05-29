@@ -2,7 +2,7 @@ name: Build & Deploy Portfólio
 
 on:
   push:
-    branches: [main]
+    branches: [master]
     paths:
       - "carros/**"
       - "scripts/build.py"
@@ -51,7 +51,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          ref: main   # pega o commit atualizado pelo job build
+          ref: master   # pega o commit atualizado pelo job build
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
