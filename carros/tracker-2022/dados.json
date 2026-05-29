@@ -1,0 +1,11 @@
+{
+  "nome": "Chevrolet Tracker",
+  "ano": 2022,
+  "preco": 119900,
+  "km": 31000,
+  "cor": "Azul",
+  "cambio": "Automático",
+  "combustivel": "Flex",
+  "descricao": "Tracker Premier turbo, teto solar panorâmico, câmera 360°, assistente de frenagem automática. Top de linha.",
+  "fotos": ["foto1.jpg", "foto2.jpg"]
+}

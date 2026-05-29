@@ -1,0 +1,11 @@
+{
+  "nome": "Toyota Hilux",
+  "ano": 2023,
+  "preco": 289900,
+  "km": 15000,
+  "cor": "Prata",
+  "cambio": "Automático",
+  "combustivel": "Diesel",
+  "descricao": "Hilux SRX 4x4 com todos os opcionais. Carroceria, rodas 18\", suspensão reforçada. Garantia de fábrica.",
+  "fotos": ["foto1.jpg", "foto2.jpg"]
+}

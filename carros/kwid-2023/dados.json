@@ -1,0 +1,11 @@
+{
+  "nome": "Renault Kwid",
+  "ano": 2023,
+  "preco": 69900,
+  "km": 5000,
+  "cor": "Laranja",
+  "cambio": "Manual",
+  "combustivel": "Flex",
+  "descricao": "Kwid Outsider 1.0 praticamente zero km. Suspensão elevada, proteções plásticas e estilo aventureiro. Econômico.",
+  "fotos": ["foto1.jpg", "foto2.jpg"]
+}
